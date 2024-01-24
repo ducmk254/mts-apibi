@@ -1,0 +1,35 @@
+version: '3'
+services:
+  api:
+    image: api-bi:79
+    restart: always
+    networks:
+      - api-network-test
+    ports:
+      - 8082:8082
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    volumes:
+      - ./.env:/.env
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: mongo-apidw
+    env_file:
+      - ./.env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongo:/data/db
+    ports:
+      - 27021:27017
+    networks:
+      - api-network-test
+volumes:
+  mongo:
+networks:
+  api-network-test:
